@@ -10,14 +10,6 @@ input.onButtonPressed(Button.A, function () {
         led.plotBrightness(cursorXPosition, cursorYPosition, plottedBrightness)
     }
 })
-input.onGesture(Gesture.LogoUp, function () {
-    changeInY = -1
-    changeInX = 0
-})
-input.onGesture(Gesture.TiltLeft, function () {
-    changeInY = 0
-    changeInX = -1
-})
 function startNewImage () {
     if (imageIndex >= imageList.length) {
         imageIndex = 0
@@ -39,10 +31,6 @@ function startNewImage () {
     savedYPosition = cursorYPosition
     led.plotBrightness(cursorXPosition, cursorYPosition, cursorBrightness)
 }
-input.onGesture(Gesture.ScreenUp, function () {
-    changeInX = 0
-    changeInY = 0
-})
 function processMoveCursorX (movingRightIndicator: boolean) {
     savedXPosition = cursorXPosition
     savedYPosition = cursorYPosition
@@ -63,14 +51,6 @@ function processMoveCursorY (movingUpIndicator: boolean) {
 }
 input.onButtonPressed(Button.B, function () {
     checkingImage = true
-})
-input.onGesture(Gesture.TiltRight, function () {
-    changeInY = 0
-    changeInX = 1
-})
-input.onGesture(Gesture.LogoDown, function () {
-    changeInY = 1
-    changeInX = 0
 })
 function determineXDestination (currentXPosition: number, movingRightIndicator: boolean) {
     if (movingRightIndicator) {
@@ -104,6 +84,8 @@ function determineYDestination (currentYPosition: number, movingUpIndicator: boo
 }
 let screenImage: Image = null
 let cursorToggleIndicator = false
+let roll = 0
+let pitch = 0
 let checkingImage = false
 let savedYPosition = 0
 let savedXPosition = 0
@@ -116,15 +98,13 @@ let cursorXPosition = 0
 let destinationBrightness = 0
 let imageIndex = 0
 let imageList: Image[] = []
-let changeInY = 0
-let changeInX = 0
 let plottedBrightness = 0
 let cursorBrightness = 0
-game.startCountdown(60000)
-cursorBrightness = 125
+game.startCountdown(120000)
+cursorBrightness = 50
 plottedBrightness = 255
-changeInX = 0
-changeInY = 0
+let changeInX = 0
+let changeInY = 0
 imageList = [
 images.iconImage(IconNames.SmallDiamond),
 images.iconImage(IconNames.SmallHeart),
@@ -145,7 +125,33 @@ images.createImage(`
 ]
 imageIndex = 0
 startNewImage()
-loops.everyInterval(500, function () {
+basic.forever(function () {
+    pitch = input.rotation(Rotation.Pitch)
+    roll = input.rotation(Rotation.Roll)
+    if (Math.abs(pitch) < 15 && Math.abs(roll) < 15) {
+        changeInX = 0
+        changeInY = 0
+    } else {
+        if (Math.abs(pitch) < Math.abs(roll)) {
+            if (0 < roll) {
+                changeInY = 0
+                changeInX = 1
+            } else {
+                changeInY = 0
+                changeInX = -1
+            }
+        } else {
+            if (0 < pitch) {
+                changeInY = -1
+                changeInX = 0
+            } else {
+                changeInY = 1
+                changeInX = 0
+            }
+        }
+    }
+})
+loops.everyInterval(750, function () {
     if (game.isGameOver()) {
         cursorBrightness = 0
     } else {
