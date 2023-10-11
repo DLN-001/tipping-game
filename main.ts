@@ -125,7 +125,24 @@ cursorBrightness = 125
 plottedBrightness = 255
 changeInX = 0
 changeInY = 0
-imageList = [images.iconImage(IconNames.SmallDiamond), images.iconImage(IconNames.SmallSquare), images.iconImage(IconNames.Square)]
+imageList = [
+images.iconImage(IconNames.SmallDiamond),
+images.iconImage(IconNames.SmallHeart),
+images.iconImage(IconNames.SmallSquare),
+images.iconImage(IconNames.Tortoise),
+images.iconImage(IconNames.Target),
+images.iconImage(IconNames.Duck),
+images.iconImage(IconNames.Skull),
+images.iconImage(IconNames.Ghost),
+images.iconImage(IconNames.Chessboard),
+images.createImage(`
+    # # # . #
+    . # . # #
+    # # # . .
+    # . # # #
+    . # . # .
+    `)
+]
 imageIndex = 0
 startNewImage()
 loops.everyInterval(500, function () {
@@ -150,6 +167,7 @@ loops.everyInterval(500, function () {
                 led.plotBrightness(cursorXPosition, cursorYPosition, cursorBrightness)
             } else {
                 cursorToggleIndicator = true
+                led.plotBrightness(cursorXPosition, cursorYPosition, destinationBrightness)
             }
         } else {
             led.plotBrightness(cursorXPosition, cursorYPosition, cursorBrightness)
